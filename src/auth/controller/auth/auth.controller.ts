@@ -31,4 +31,12 @@ export class AuthController {
         return await this.authService.logOut(user['sub']);
     }
 
+    @UseGuards(AuthGuard('refreash-token'))
+    @Post('refreash')
+    @HttpCode(HttpStatus.OK)
+    async refreashTokens(@Request() req) {
+        const user = req.user;
+        return await this.authService.refreashTokens(user['sub'], user['refreashtoken']);
+    }
+
 }

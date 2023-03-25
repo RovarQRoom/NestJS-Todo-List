@@ -69,6 +69,22 @@ export class AuthService implements IAuthInterface {
     }
     // End Log Out User
 
+
+    // Refreash Tokens
+    async refreashTokens(userId:string, refreashToken:string){
+        const user = await this.AuthRepository.refreashTokens(userId);
+
+        const isTokenMatched = await compare(refreashToken, user.hashedRt);
+        if(!isTokenMatched){
+            throw new UnauthorizedException("Token is not matched");
+        }
+
+        const tokens = await this.getTokens(user._id, user.Email);
+        await this.AuthRepository.updatedRtHash(user._id, tokens.refresh_token);
+        return tokens;
+    }
+    // End Refreash Tokens
+
     // Bcrypt Password Comparing
     async validatePassword(plainTextPassword: string,hashedPassword: string): Promise<boolean> {
         const isPasswordMatched = await compare(plainTextPassword, hashedPassword);

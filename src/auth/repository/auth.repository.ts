@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { IAuthRepositoryInterface } from "../interface/Iauth-repository.interface";
 import { InjectModel } from "@nestjs/mongoose";
 import { Users } from "src/Model/UsersModel";
@@ -33,8 +33,13 @@ export class AuthRepository implements IAuthRepositoryInterface {
         return user;
     }
 
-    async refreashTokens(userId:string, refreashToken:string){
-        
+    async refreashTokens(userId:string){
+        const user = await this.usersModel.findById(userId).exec();
+        if(!user){
+            throw new ForbiddenException("Access Denied");
+        }
+
+        return user;
     }
 
 
