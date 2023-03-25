@@ -4,6 +4,7 @@ import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { AuthService } from 'src/auth/service/auth/auth.service';
 import { Tokens } from 'src/auth/types/tokens.type';
 import { SignUpAuthDto } from '../../Dtos/auth.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +21,14 @@ export class AuthController {
     @HttpCode(HttpStatus.CREATED)
     async register(@Body() signUpAuthDto: SignUpAuthDto): Promise<Tokens> {
         return await this.authService.signUp(signUpAuthDto);
+    }
+
+    @UseGuards(AuthGuard('access-token'))
+    @Post('logout')
+    @HttpCode(HttpStatus.OK)
+    async logout(@Request() req) {
+        const user = req.user;
+        return await this.authService.logOut(user['sub']);
     }
 
 }

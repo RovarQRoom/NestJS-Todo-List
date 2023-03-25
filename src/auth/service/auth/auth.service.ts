@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Tokens } from '../../types/tokens.type';
@@ -26,6 +25,7 @@ export class AuthService implements IAuthInterface {
     //     return null;
     // }
 
+    // Sign In User And Authentication
     async signIn(signinAuthDto: SigninAuthDto): Promise<Tokens> {
         const user = await this.AuthRepository.findUserByEmail(signinAuthDto.Email);
 
@@ -37,7 +37,9 @@ export class AuthService implements IAuthInterface {
         throw new UnauthorizedException("User not found");
         
     }
+    // End Sign In User And Authentication
 
+    // Sign Up User And Authentication
     async signUp(signUpAuthDto:SignUpAuthDto): Promise<Tokens> {
         const createdUser = await this.AuthRepository.signUp(signUpAuthDto);
 
@@ -59,6 +61,13 @@ export class AuthService implements IAuthInterface {
         await this.AuthRepository.updatedRtHash(createdUser._id, tokens.refresh_token);
         return tokens;
     }
+    // End Sign Up User And Authentication
+
+    // Log Out User
+    async logOut(userId:string) {
+        return await this.AuthRepository.logOut(userId);
+    }
+    // End Log Out User
 
     // Bcrypt Password Comparing
     async validatePassword(plainTextPassword: string,hashedPassword: string): Promise<boolean> {
