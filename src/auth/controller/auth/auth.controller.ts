@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { SigninAuthDto } from 'src/auth/Dtos/auth.dto';
 import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { AuthService } from 'src/auth/service/auth/auth.service';
@@ -11,11 +11,13 @@ export class AuthController {
 
     // @UseGuards(LocalAuthGuard)
     @Post('login')
+    @HttpCode(HttpStatus.OK)
     async login(@Body() signinAuthDto: SigninAuthDto): Promise<Tokens> {
         return await this.authService.signIn(signinAuthDto);
     }
 
     @Post('signup')
+    @HttpCode(HttpStatus.CREATED)
     async register(@Body() signUpAuthDto: SignUpAuthDto): Promise<Tokens> {
         return await this.authService.signUp(signUpAuthDto);
     }
