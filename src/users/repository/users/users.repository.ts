@@ -90,8 +90,8 @@ export class UsersRepository implements IUsersRepository {
         return bcrypt.hash(password, salt);
     } 
 
-    async updatedRtHash(id: string, hashedRt: string) {
-        const hash = await this.hashPassword(hashedRt,10);
-        await this.usersModel.findByIdAndUpdate(id,{hashedRt: hash},{new: true}).exec();
-    }
+    // async updatedRtHash(id: string, hashedRt: string) {
+    //     const hash = await this.hashPassword(hashedRt,10);
+    //     await this.usersModel.findByIdAndUpdate(id,{hashedRt: hash},{new: true}).exec();
+    // }
 }

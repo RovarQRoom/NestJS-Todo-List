@@ -1,6 +1,8 @@
+import { Global } from '@nestjs/common';
 import {Schema, Prop, SchemaFactory} from '@nestjs/mongoose';
 import {Document} from 'mongoose';
 
+@Global()
 @Schema()
 export class Users extends Document {
     @Prop({type:String})

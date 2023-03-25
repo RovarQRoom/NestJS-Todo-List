@@ -37,12 +37,4 @@ export class UsersController {
         return updatedUser;
     }
 
-
-
-    @Get('email/:email')
-    async getUserByEmail(@Param("email") email:string) {
-        const users = await this.userService.findOne(email);
-        return users;
-    }
-
 }

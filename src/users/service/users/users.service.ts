@@ -14,7 +14,7 @@ export class UsersService implements IUsers {
         const createdUser = await this.usersRepository.createUser(usersDto);
         const errors = await validate(createdUser);
 
-        const user = await this.findOne(usersDto.Email);
+        const user = await this.usersRepository.findOne(usersDto.Email);
          if(user){
             throw new BadRequestException("User Already Exist With This Email");
         }
@@ -74,16 +74,16 @@ export class UsersService implements IUsers {
     }
     // End Update User By Id
 
-    async findOne(email:string): Promise<Users> {
-        const user = await this.usersRepository.findOne(email);
-        return user;
-    }
+    // async findOne(email:string): Promise<Users> {
+    //     const user = await this.usersRepository.findOne(email);
+    //     return user;
+    // }
 
-    // Update Refresh Token Hash of Users
-    async updatedRtHash(id: string, hashedRt: string) {
-        return await this.usersRepository.updatedRtHash(id, hashedRt);
-    }
-    // End Update Refresh Token Hash of Users
+    // // Update Refresh Token Hash of Users
+    // async updatedRtHash(id: string, hashedRt: string) {
+    //     return await this.usersRepository.updatedRtHash(id, hashedRt);
+    // }
+    // // End Update Refresh Token Hash of Users
 
-    
+
 }

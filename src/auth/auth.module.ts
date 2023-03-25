@@ -7,10 +7,18 @@ import { AuthController } from './controller/auth/auth.controller';
 import { AccessTokenStrategy } from './strategies/AccessToken.strategy';
 import { RefreashTokenStrategy } from './strategies/RefreashToken.strategy';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthRepository } from './repository/auth.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Users, UsersSchema } from 'src/Model/UsersModel';
 
 @Module({
-    imports: [UsersModule, PassportModule, JwtModule.register({})],
+    imports: [
+        UsersModule, 
+        PassportModule, 
+        JwtModule.register({}),
+        MongooseModule.forFeature([{name: Users.name, schema: UsersSchema}])
+    ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy, RefreashTokenStrategy, AccessTokenStrategy],
+    providers: [AuthService, LocalStrategy, RefreashTokenStrategy, AccessTokenStrategy,AuthRepository],
 })
 export class AuthModule {}
