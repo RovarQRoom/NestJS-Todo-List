@@ -79,8 +79,12 @@ export class UsersService implements IUsers {
         return user;
     }
 
+    // Update Refresh Token Hash of Users
     async updatedRtHash(id: string, hashedRt: string) {
         return await this.usersRepository.updatedRtHash(id, hashedRt);
     }
+    // End Update Refresh Token Hash of Users
+
+    
 
 }
