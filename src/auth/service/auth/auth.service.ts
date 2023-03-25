@@ -49,6 +49,7 @@ export class AuthService {
         if(!isPasswordMatched){
             throw new UnauthorizedException("Password is not matched");
         }
+        
         return isPasswordMatched;
       }
     // End Bcrypt Password Comparing
