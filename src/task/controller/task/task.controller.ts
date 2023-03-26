@@ -20,6 +20,8 @@ export class TaskController {
 
     @Post('create')
     async createTask(@GetCurrentUserId() userId: string, @Body() taskCreateDto: TaskCreateDto): Promise<Tasks> {
+        console.log(userId);
+        
         return await this.taskService.createTask(userId, taskCreateDto);
     }
 }

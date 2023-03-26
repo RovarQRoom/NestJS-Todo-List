@@ -18,20 +18,21 @@ export class TaskService implements ITaskServiceInterface {
 
         return createdTask;
     }
+
     async getTasks(userId: any): Promise<Tasks[]> {
         if(!userId) throw new NotFoundException("User not found");
 
         const tasks = await this.taskRepository.getTasks(userId);
-        console.log(tasks);
-        
         return tasks;
     }
+
     async getTaskById(id: string, userId: any): Promise<Tasks> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
         const task = await this.taskRepository.getTaskById(id, userId);
         return task;
     }
+
     async deleteTask(id: string, userId: any, taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
@@ -39,12 +40,14 @@ export class TaskService implements ITaskServiceInterface {
         const task = await this.taskRepository.deleteTask(id, userId, taskDeleteDto);
         return task;
     }
+
     async updateTask(id: string, userId: any, taskUpdateDto: TaskUpdateDto): Promise<Tasks> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
         const task = await this.taskRepository.updateTask(id, userId, taskUpdateDto);
         return task;
     }
+
     async updateTaskStatus(id: string, userId: any, taskUpdateStatusDto: TaskUpdateDto): Promise<Tasks> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
@@ -54,5 +57,6 @@ export class TaskService implements ITaskServiceInterface {
         const task = await this.taskRepository.updateTask(id, userId, taskUpdateStatusDto);
         return task;
     }
+    
 
 }
