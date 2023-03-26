@@ -31,7 +31,7 @@ export class TaskRepository implements ITaskRepositoryInterface{
         return task;
     }
     async deleteTask(id: string, userId:string, taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
-        const task = await this.usersModel.findOneAndUpdate({id, userId}, taskDeleteDto, {new: true});
+        const task = await this.usersModel.findOneAndUpdate({_id:id, UserId:userId}, taskDeleteDto, {new: true});
         if(!task) throw new Error("Task Was Not Deleted By Id");
         return task;
     }
