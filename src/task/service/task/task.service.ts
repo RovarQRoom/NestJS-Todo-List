@@ -52,7 +52,7 @@ export class TaskService implements ITaskServiceInterface {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
         taskUpdateStatusDto.IsDone = true;
-        taskUpdateStatusDto.DoneDate = new Date(new Date().toString().replace(/T/, ':').replace(/\.\w*/, ''));
+        taskUpdateStatusDto.DoneDate = new Date();
         
         const task = await this.taskRepository.updateTask(id, userId, taskUpdateStatusDto);
         return task;

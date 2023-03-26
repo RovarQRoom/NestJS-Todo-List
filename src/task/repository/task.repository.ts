@@ -36,7 +36,7 @@ export class TaskRepository implements ITaskRepositoryInterface{
         return task;
     }
     async updateTask(id: string, userId:string, taskUpdateDto:TaskUpdateDto): Promise<any> {
-        const task = await this.usersModel.findOneAndUpdate({id, userId}, taskUpdateDto, {new: true});
+        const task = await this.usersModel.findOneAndUpdate({_id:id, UserId:userId, IsDone:false}, taskUpdateDto, {new: true});
         if(!task) throw new Error("Task Was Not Updated By Id");
         return task;
     }
