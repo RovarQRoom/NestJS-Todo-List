@@ -33,6 +33,7 @@ export class AuthController {
         return await this.authService.logOut(userId);
     }
 
+    @Public()
     @UseGuards(RefreashTokenGuard)
     @Post('refreash')
     @HttpCode(HttpStatus.OK)
