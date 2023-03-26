@@ -22,15 +22,15 @@ export class TaskRepository implements ITaskRepositoryInterface{
     }
 
     async getTasks(userId:string): Promise<Tasks[]> {
-        const a = await this.cacheManager.get("tasks")
-        const cachedtasks = a as Tasks[];
-        if(cachedtasks) 
-        {
-            return cachedtasks;
-        }
-
+        // // if(cachedtasks) 
+        // // {
+        // //     return cachedtasks;
+        // // }
+        // await this.cacheManager.set("tasks", tasks);
+        // const cachedtasks = await this.cacheManager.get("tasks");
+        // console.log(cachedtasks);
+        
         const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false});
-        await this.cacheManager.set("tasks", tasks);
         if(!tasks) throw new Error("Tasks not found");
         
         return tasks;
