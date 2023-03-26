@@ -32,6 +32,33 @@ export class AuthRepository implements IAuthRepositoryInterface {
         }
         return user;
     }
+    
+    // Find User By Email And Password
+    async findUserByEmail(Email:string): Promise<Users> {
+
+        const user = await this.usersModel.findOne({Email}).exec();
+        if(!user){
+            return null;
+        }
+        return user;
+    }
+    
+    async findUserById(id: string): Promise<Users> {
+        const user = await this.usersModel.findById(id).exec();
+        if(!user){
+            throw new UnauthorizedException("User not found");
+        }
+        return user;
+    }
+    
+    async updatedRtHash(id: string, hashedRt: string) {
+        const hash = await this.hashPassword(hashedRt,10);
+        await this.usersModel.findByIdAndUpdate(id,{hashedRt: hash},{new: true}).exec();
+    }
+    
+    private async hashPassword(password: string, salt: number): Promise<string> {
+        return bcrypt.hash(password, salt);
+    } 
 
     async refreashTokens(userId:string){
         const user = await this.usersModel.findById(userId).exec();
@@ -41,32 +68,4 @@ export class AuthRepository implements IAuthRepositoryInterface {
 
         return user;
     }
-
-
-    private async hashPassword(password: string, salt: number): Promise<string> {
-        return bcrypt.hash(password, salt);
-    } 
-
-     // Find User By Email And Password
-     async findUserByEmail(email:string): Promise<Users> {
-        const user = await this.usersModel.findOne({Email: email}).exec();
-        if(!user){
-            return null;
-        }
-        return user;
-    }
-
-    async findUserById(id: string): Promise<Users> {
-        const user = await this.usersModel.findById(id).exec();
-        if(!user){
-            throw new UnauthorizedException("User not found");
-        }
-        return user;
-    }
-
-    async updatedRtHash(id: string, hashedRt: string) {
-        const hash = await this.hashPassword(hashedRt,10);
-        await this.usersModel.findByIdAndUpdate(id,{hashedRt: hash},{new: true}).exec();
-    }
-
 }

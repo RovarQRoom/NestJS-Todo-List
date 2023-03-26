@@ -28,7 +28,7 @@ export class AuthService implements IAuthInterface {
     // Sign In User And Authentication
     async signIn(signinAuthDto: SigninAuthDto): Promise<Tokens> {
         const user = await this.AuthRepository.findUserByEmail(signinAuthDto.Email);
-
+        
         if(user && await this.validatePassword(signinAuthDto.Password, user.Password)){
             const tokens = await this.getTokens(user._id, user.Email);
             await this.AuthRepository.updatedRtHash(user._id, tokens.refresh_token);
@@ -91,7 +91,7 @@ export class AuthService implements IAuthInterface {
         if(!isPasswordMatched){
             throw new UnauthorizedException("Password is not matched");
         }
-    
+        
         return isPasswordMatched;
       }
     // End Bcrypt Password Comparing
