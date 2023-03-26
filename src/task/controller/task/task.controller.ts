@@ -6,7 +6,9 @@ import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from '../../Dtos/task.dto
 
 @Controller('task')
 export class TaskController {
-    constructor(private readonly taskService:TaskService) {}
+    constructor(
+        private readonly taskService:TaskService
+        ) {}
 
     @Get('tasks')
     async getTasks(@GetCurrentUserId() userId: string): Promise<Tasks[]> {

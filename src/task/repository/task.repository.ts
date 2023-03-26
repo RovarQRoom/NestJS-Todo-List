@@ -1,14 +1,18 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, CACHE_MANAGER, Inject } from '@nestjs/common';
 import { ITaskRepositoryInterface } from "../interface/Itaskrepository.interface";
 import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from '../Dtos/task.dto';
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Tasks } from '../../Model/TaskModel';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class TaskRepository implements ITaskRepositoryInterface{
 
-    constructor(@InjectModel(Tasks.name) private readonly taskModel: Model<Tasks>) {}
+    constructor(
+        @InjectModel(Tasks.name) private readonly taskModel: Model<Tasks>,
+        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+        ) {}
 
     async createTask(userId:string ,taskCreateDto: TaskCreateDto): Promise<Tasks> {
         taskCreateDto.UserId = userId;
@@ -18,7 +22,15 @@ export class TaskRepository implements ITaskRepositoryInterface{
     }
 
     async getTasks(userId:string): Promise<Tasks[]> {
+        const a = await this.cacheManager.get("tasks")
+        const cachedtasks = a as Tasks[];
+        if(cachedtasks) 
+        {
+            return cachedtasks;
+        }
+
         const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false});
+        await this.cacheManager.set("tasks", tasks);
         if(!tasks) throw new Error("Tasks not found");
         
         return tasks;

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
@@ -12,6 +12,10 @@ import { TaskModule } from './task/task.module';
     UsersModule,
     AuthModule,
     TaskModule,
+    CacheModule.register({
+      ttl: 60, // seconds
+      max: 1000, // maximum number of items in cache
+    }),
   ],
   controllers: [],
   providers: [{
