@@ -29,5 +29,5 @@ export class TaskDeleteDto {
     
     IsDeleted: boolean;
 
-    DeletedDate: Date|null;
+    DeletedAt: Date|null;
 }

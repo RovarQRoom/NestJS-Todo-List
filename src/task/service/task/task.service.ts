@@ -37,6 +37,7 @@ export class TaskService implements ITaskServiceInterface {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
         taskDeleteDto.IsDeleted = true;
+        taskDeleteDto.DeletedAt = new Date();
         const task = await this.taskRepository.deleteTask(id, userId, taskDeleteDto);
         return task;
     }
