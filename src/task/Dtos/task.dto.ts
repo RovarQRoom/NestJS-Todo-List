@@ -22,13 +22,12 @@ export class TaskUpdateDto {
     Description: string|null;
 
     DueTime: Date|null;
-}
 
-export class TaskUpdateStatusDto {
     IsDone: boolean;
 
     DoneDate: Date|null;
 }
+
 
 export class TaskDeleteDto {
     
