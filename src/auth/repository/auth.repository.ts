@@ -37,6 +37,7 @@ export class AuthRepository implements IAuthRepositoryInterface {
     async findUserByEmail(Email:string): Promise<Users> {
 
         const user = await this.usersModel.findOne({Email}).exec();
+        
         if(!user){
             return null;
         }

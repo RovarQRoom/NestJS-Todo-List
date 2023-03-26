@@ -8,10 +8,6 @@ export class TaskCreateDto {
 
     DueTime: Date|null;
 
-    IsDone: boolean;
-
-    DoneDate: Date|null;
-
     UserId: string;
 }
 

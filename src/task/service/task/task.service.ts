@@ -12,14 +12,18 @@ export class TaskService implements ITaskServiceInterface {
         private readonly taskRepository: TaskRepository
         ){}
     
-    async createTask(taskCreateDto: TaskCreateDto): Promise<Tasks> {
-        const createdTask = await this.taskRepository.createTask(taskCreateDto);
+    async createTask(userId:string ,taskCreateDto: TaskCreateDto ): Promise<Tasks> {
+        const createdTask = await this.taskRepository.createTask(userId, taskCreateDto);
+        createdTask.save();
+
         return createdTask;
     }
     async getTasks(userId: any): Promise<Tasks[]> {
         if(!userId) throw new NotFoundException("User not found");
 
         const tasks = await this.taskRepository.getTasks(userId);
+        console.log(tasks);
+        
         return tasks;
     }
     async getTaskById(id: string, userId: any): Promise<Tasks> {
