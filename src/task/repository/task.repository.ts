@@ -1,22 +1,43 @@
 import { Injectable } from "@nestjs/common";
 import { ITaskRepositoryInterface } from "../interface/Itaskrepository.interface";
+import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from '../Dtos/task.dto';
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { Tasks } from '../../Model/TaskModel';
+
+import { GetCurrentUserId } from '../../common/decorators/get-current-user-id.decorator';
 
 @Injectable()
 export class TaskRepository implements ITaskRepositoryInterface{
-    createTask(createTaskDto: any): Promise<any> {
-        throw new Error("Method not implemented.");
+
+    constructor(@InjectModel(Tasks.name) private readonly usersModel: Model<Tasks>) {}
+
+    async createTask(taskCreateDto: TaskCreateDto): Promise<Tasks> {
+        const task = await new this.usersModel(taskCreateDto);
+        if(!task) throw new Error("Task not created");
+        return task;
     }
-    getTasks(user: any): Promise<any> {
-        throw new Error("Method not implemented.");
+
+    async getTasks(@GetCurrentUserId() userId:string): Promise<Tasks[]> {
+        const tasks = await this.usersModel.find({userId: userId, isDeleted: false});
+        if(!tasks) throw new Error("Tasks not found");
+        return tasks;
     }
-    getTaskById(id: string, user: any): Promise<any> {
-        throw new Error("Method not implemented.");
+
+    async getTaskById(id: string, @GetCurrentUserId() userId:string): Promise<Tasks> {
+        const task = await this.usersModel.findOne({id, userId, isDeleted: false});
+        if(!task) throw new Error("Task not found By Id");
+        return task;
     }
-    deleteTask(id: string, user: any): Promise<any> {
-        throw new Error("Method not implemented.");
+    async deleteTask(id: string, @GetCurrentUserId() userId:string, taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
+        const task = await this.usersModel.findOneAndUpdate({id, userId}, taskDeleteDto, {new: true});
+        if(!task) throw new Error("Task Was Not Deleted By Id");
+        return task;
     }
-    updateTask(id: string, status: any, user: any): Promise<any> {
-        throw new Error("Method not implemented.");
+    async updateTask(id: string, @GetCurrentUserId() userId:string, taskUpdateDto:TaskUpdateDto): Promise<any> {
+        const task = await this.usersModel.findOneAndUpdate({id, userId}, taskUpdateDto, {new: true});
+        if(!task) throw new Error("Task Was Not Updated By Id");
+        return task;
     }
 
 }
