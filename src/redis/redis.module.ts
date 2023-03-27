@@ -1,5 +1,7 @@
 import { DynamicModule, FactoryProvider, Module, ModuleMetadata } from '@nestjs/common';
-import Redis, { RedisOptions } from 'ioredis';
+import IORedis, {Redis, RedisOptions } from 'ioredis';
+
+export const IOREDISKEY = 'IOREDISKEY';
 
 type RedisModuleOptions = {
     connectionOptions: RedisOptions,
@@ -12,10 +14,21 @@ type RedisAsyncModuleOptions = {
 
 @Module({})
 export class RedisModule {
-    static async registerAsync(): Promise<DynamicModule> {
+    static async registerAsync({useFactory, imports, inject}:RedisAsyncModuleOptions): Promise<DynamicModule> {
+        const redisProvider = {
+            provide: IOREDISKEY,
+            useFactory: async (...args: any[]) => {
+                const {connectionOptions, onClientReady} = await useFactory(...args);
+                const client = await new IORedis(connectionOptions);
+                if (onClientReady) {
+                    client.on('ready', () => onClientReady(client));
+                }
+                return client;
+            }
+        };
         return  {
             module:RedisModule,
-            imports: [],
+            imports,
             providers: [],
             exports: [],
         };
