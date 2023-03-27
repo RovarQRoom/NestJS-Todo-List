@@ -14,17 +14,6 @@ export class AuthService implements IAuthInterface {
         private readonly jwtService: JwtService
         ){}
 
-    // async validateUser(email: string, pass: string): Promise<any> {
-    //     const user = await this.usersService.findOne(email);
-
-    //     if(user && await this.validatePassword(pass, user.Password)){
-    //         const { Password, ...result } = user;
-    //         return result;
-    //     }
-
-    //     return null;
-    // }
-
     // Sign In User And Authentication
     async signIn(signinAuthDto: SigninAuthDto): Promise<Tokens> {
         const user = await this.AuthRepository.findUserByEmail(signinAuthDto.Email);
@@ -39,6 +28,13 @@ export class AuthService implements IAuthInterface {
         
     }
     // End Sign In User And Authentication
+
+    async googleLogin(req) {
+        if (!req.user) {
+          return 'No user from Google';
+        }
+        return req.user;
+    }
 
     // Sign Up User And Authentication
     async signUp(signUpAuthDto:SignUpAuthDto): Promise<Tokens> {
