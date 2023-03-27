@@ -5,11 +5,11 @@ import { Request } from "express";
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class RefreashTokenStrategy extends PassportStrategy(Strategy, 'refreash-token') {
+export class RefreashTokenStrategy extends PassportStrategy(Strategy, process.env.REFREASH_TOKEN_STRATEGY) {
     constructor(private readonly authService: AuthService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: "hevarkamilothmanaziz",
+            secretOrKey: process.env.REFREASH_TOKEN_KEY,
             passReqToCallback: true,
         });
     }
