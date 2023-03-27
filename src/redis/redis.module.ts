@@ -1,4 +1,4 @@
-import { DynamicModule, Module, ModuleMetadata } from '@nestjs/common';
+import { DynamicModule, FactoryProvider, Module, ModuleMetadata } from '@nestjs/common';
 import Redis, { RedisOptions } from 'ioredis';
 
 type RedisModuleOptions = {
@@ -8,7 +8,7 @@ type RedisModuleOptions = {
 
 type RedisAsyncModuleOptions = {
     useFactory: (...args: any[]) => Promise<RedisModuleOptions> | RedisModuleOptions,
-} & Pick<ModuleMetadata, 'imports'> & Pick<ModuleMetadata, 'providers'>;
+} & Pick<ModuleMetadata, 'imports'> & Pick<FactoryProvider, 'inject'>;
 
 @Module({})
 export class RedisModule {
