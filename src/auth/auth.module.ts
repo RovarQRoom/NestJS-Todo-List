@@ -19,6 +19,12 @@ import { Users, UsersSchema } from 'src/Model/UsersModel';
         MongooseModule.forFeature([{name: Users.name, schema: UsersSchema}])
     ],
     controllers: [AuthController],
-    providers: [AuthService, LocalStrategy, RefreashTokenStrategy, AccessTokenStrategy,AuthRepository],
+    providers: [
+        AuthService, 
+        LocalStrategy, 
+        RefreashTokenStrategy, 
+        AccessTokenStrategy,
+        AuthRepository,
+    ],
 })
 export class AuthModule {}
