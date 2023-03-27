@@ -10,6 +10,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthRepository } from './repository/auth.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Users, UsersSchema } from 'src/Model/UsersModel';
+import { GoogleStrategy } from './strategies/Google.strategy';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { Users, UsersSchema } from 'src/Model/UsersModel';
         RefreashTokenStrategy, 
         AccessTokenStrategy,
         AuthRepository,
+        GoogleStrategy
     ],
 })
 export class AuthModule {}
