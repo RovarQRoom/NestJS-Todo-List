@@ -22,15 +22,15 @@ export class TaskRepository implements ITaskRepositoryInterface{
     }
 
     async getTasks(userId:string): Promise<Tasks[]> {
-        // // if(cachedtasks) 
-        // // {
-        // //     return cachedtasks;
-        // // }
-        // await this.cacheManager.set("tasks", tasks);
-        // const cachedtasks = await this.cacheManager.get("tasks");
-        // console.log(cachedtasks);
+        const cachedtasks = await this.cacheManager.get("tasks");
+        if(cachedtasks) 
+        {
+            console.log(cachedtasks);
+            return cachedtasks as Tasks[];
+        }
         
         const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false});
+        await this.cacheManager.set("tasks", tasks, 100000);
         if(!tasks) throw new Error("Tasks not found");
         
         return tasks;
@@ -52,4 +52,6 @@ export class TaskRepository implements ITaskRepositoryInterface{
         if(!task) throw new BadRequestException("Task Can't be Updated Cause It's Already Done");
         return task;
     }
+
+    private 
 }
