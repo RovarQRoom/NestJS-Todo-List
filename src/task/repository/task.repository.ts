@@ -12,8 +12,8 @@ export class TaskRepository implements ITaskRepositoryInterface{
 
     constructor(
         @InjectModel(Tasks.name) private readonly taskModel: Model<Tasks>,
-        // @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-        private readonly redisCacheService: RedisCacheService
+        // @Inject(CACHE_MANAGER) private readonly cacheManager: Cache, // This is the old way of injecting cache manager To memory
+        private readonly redisCacheService: RedisCacheService // This is the new way of injecting cache manager to redis
         ) {}
 
     async createTask(userId:string ,taskCreateDto: TaskCreateDto): Promise<Tasks> {
@@ -39,8 +39,15 @@ export class TaskRepository implements ITaskRepositoryInterface{
     }
 
     async getTaskById(id: string, userId:string): Promise<Tasks> {
-        const task = await this.taskModel.findOne({id, userId, isDeleted: false});
+        const cachedtask = await this.redisCacheService.get("task");
+        if(cachedtask) 
+        {
+            console.log(cachedtask);
+            return cachedtask;
+        }
+        const task = await this.taskModel.findOne({_id:id, UserId:userId, IsDeleted:false});
         if(!task) throw new BadRequestException("Can't find task");
+        await this.redisCacheService.set("task", task, 100000);
         return task;
     }
     async deleteTask(id: string, userId:string, taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
