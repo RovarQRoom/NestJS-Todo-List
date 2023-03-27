@@ -19,10 +19,10 @@ export class TaskService implements ITaskServiceInterface {
         return createdTask;
     }
 
-    async getTasks(userId: any): Promise<Tasks[]> {
+    async getTasks(userId: any,page:number): Promise<Tasks[]> {
         if(!userId) throw new NotFoundException("User not found");
 
-        const tasks = await this.taskRepository.getTasks(userId);
+        const tasks = await this.taskRepository.getTasks(userId,page);
         return tasks;
     }
 

@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Query, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { TaskService } from '../../service/task/task.service';
 import { GetCurrentUserId } from 'src/common/decorators/get-current-user-id.decorator';
 import { Tasks } from 'src/Model/TaskModel';
 import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from '../../Dtos/task.dto';
+
 
 @Controller('task')
 export class TaskController {
@@ -11,8 +12,8 @@ export class TaskController {
         ) {}
 
     @Get('tasks')
-    async getTasks(@GetCurrentUserId() userId: string): Promise<Tasks[]> {
-        return await this.taskService.getTasks(userId);
+    async getTasks(@GetCurrentUserId() userId: string,@Query('page') page:number): Promise<Tasks[]> {
+        return await this.taskService.getTasks(userId,page);
     }
 
     @Get(':id')

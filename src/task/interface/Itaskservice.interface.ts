@@ -1,9 +1,9 @@
 
 export interface ITaskServiceInterface {
     createTask(userId:string ,taskCreateDto: any): Promise<any>;
-    getTasks(userId: any): Promise<any>;
-    getTaskById(id: string, userId: any): Promise<any>;
-    deleteTask(id: string, userId: any, taskDeleteDto:any): Promise<any>;
-    updateTask(id: string, userId: any, taskUpdateDto:any): Promise<any>;
-    updateTaskStatus(id: string, userId: any, taskUpdateStatusDto:any): Promise<any>;
+    getTasks(userId: string, page:number): Promise<any>;
+    getTaskById(id: string, userId: string): Promise<any>;
+    deleteTask(id: string, userId: string, taskDeleteDto:any): Promise<any>;
+    updateTask(id: string, userId: string, taskUpdateDto:any): Promise<any>;
+    updateTaskStatus(id: string, userId: string, taskUpdateStatusDto:any): Promise<any>;
 }

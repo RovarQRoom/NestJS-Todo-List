@@ -4,7 +4,6 @@ import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from '../Dtos/task.dto';
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Tasks } from '../../Model/TaskModel';
-import { Cache } from 'cache-manager';
 import { RedisCacheService } from 'src/redis/service/redis/redis.service';
 
 @Injectable()
@@ -23,15 +22,18 @@ export class TaskRepository implements ITaskRepositoryInterface{
         return task;
     }
 
-    async getTasks(userId:string): Promise<Tasks[]> {
+    async getTasks(userId:string, page:number = 1): Promise<Tasks[]> {
+        const resPerPage = 5;
+        const skip = resPerPage * (page - 1);
+
         const cachedtasks = await this.redisCacheService.get("tasks");
-        if(cachedtasks) 
+        if(cachedtasks && cachedtasks.length > 0 && page == 1) 
         {
             console.log(cachedtasks);
             return cachedtasks as Tasks[];
         }
         
-        const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false});
+        const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false}).limit(resPerPage).skip(skip);
         await this.redisCacheService.set("tasks", tasks, 100000);
         if(!tasks) throw new Error("Tasks not found");
         
