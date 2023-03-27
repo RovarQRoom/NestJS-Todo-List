@@ -4,6 +4,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessTokenGuard } from './common/guards/accessToken.guard';
 import { TaskModule } from './task/task.module';
+import { RedisModule } from './redis/redis.module';
 
 @UseInterceptors(CacheInterceptor)
 @Module({
@@ -13,9 +14,10 @@ import { TaskModule } from './task/task.module';
     AuthModule,
     TaskModule,
     CacheModule.register({
-      ttl: 60, // seconds
+      ttl: 100000, // seconds
       max: 1000, // maximum number of items in cache
     }),
+    RedisModule,
   ],
   controllers: [],
   providers: [{
