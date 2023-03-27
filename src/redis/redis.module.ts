@@ -24,13 +24,14 @@ export class RedisModule {
                     client.on('ready', () => onClientReady(client));
                 }
                 return client;
-            }
+            },
+            inject,
         };
         return  {
             module:RedisModule,
             imports,
-            providers: [],
-            exports: [],
+            providers: [redisProvider],
+            exports: [redisProvider],
         };
     }
 }
