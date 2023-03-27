@@ -5,13 +5,15 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Tasks } from '../../Model/TaskModel';
 import { Cache } from 'cache-manager';
+import { RedisCacheService } from 'src/redis/service/redis/redis.service';
 
 @Injectable()
 export class TaskRepository implements ITaskRepositoryInterface{
 
     constructor(
         @InjectModel(Tasks.name) private readonly taskModel: Model<Tasks>,
-        @Inject(CACHE_MANAGER) private readonly cacheManager: Cache
+        // @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+        private readonly redisCacheService: RedisCacheService
         ) {}
 
     async createTask(userId:string ,taskCreateDto: TaskCreateDto): Promise<Tasks> {
@@ -22,7 +24,7 @@ export class TaskRepository implements ITaskRepositoryInterface{
     }
 
     async getTasks(userId:string): Promise<Tasks[]> {
-        const cachedtasks = await this.cacheManager.get("tasks");
+        const cachedtasks = await this.redisCacheService.get("tasks");
         if(cachedtasks) 
         {
             console.log(cachedtasks);
@@ -30,7 +32,7 @@ export class TaskRepository implements ITaskRepositoryInterface{
         }
         
         const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false});
-        await this.cacheManager.set("tasks", tasks, 100000);
+        await this.redisCacheService.set("tasks", tasks, 100000);
         if(!tasks) throw new Error("Tasks not found");
         
         return tasks;

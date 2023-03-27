@@ -56,7 +56,7 @@ import { RedisCacheService } from './service/redis/redis.service';
         })
     ],
     providers: [RedisCacheService],
-    exports: [CacheModule,RedisCacheService],
+    exports: [RedisModule,RedisCacheService],
 })
 export class RedisModule implements OnModuleInit {
     constructor(@Inject(CACHE_MANAGER) private readonly cache: Cache) {}
