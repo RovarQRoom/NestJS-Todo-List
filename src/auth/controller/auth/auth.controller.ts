@@ -38,7 +38,7 @@ export class AuthController {
     @UseGuards(RefreashTokenGuard)
     @Post('refreash')
     @HttpCode(HttpStatus.OK)
-    async refreashTokens(@GetCurrentUser(process.env.REFREASH_TOKEN_STRATEGY) refreashtoken: string, @GetCurrentUserId() userId: string) {
+    async refreashTokens(@GetCurrentUser('refreashtoken') refreashtoken: string, @GetCurrentUserId() userId: string) {
         return await this.authService.refreashTokens(userId, refreashtoken);
     }
 
