@@ -1,6 +1,7 @@
 import {CACHE_MANAGER ,CacheModule as BaseCacheModule, Inject, Logger, Module, OnModuleInit } from '@nestjs/common';
 import * as redisStore from 'cache-manager-ioredis';
 import { Cache } from 'cache-manager';
+import { RedisCacheService } from './service/redis/redis.service';
 
 // export const IOREDISKEY = 'IOREDISKEY';
 
@@ -54,7 +55,7 @@ import { Cache } from 'cache-manager';
             },
         })
     ],
-    providers: [],
+    providers: [RedisCacheService],
     exports: [BaseCacheModule],
 })
 export class RedisModule implements OnModuleInit {
