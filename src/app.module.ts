@@ -17,7 +17,7 @@ import { RedisModule } from './redis/redis.module';
       ttl: 100000, // seconds
       max: 1000, // maximum number of items in cache
     }),
-    RedisModule,
+    RedisModule
   ],
   controllers: [],
   providers: [{
