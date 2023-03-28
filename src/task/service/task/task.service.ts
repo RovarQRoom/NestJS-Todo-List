@@ -12,11 +12,9 @@ export class TaskService implements ITaskServiceInterface {
         private readonly taskRepository: TaskRepository
         ){}
     
-    async createTask(userId:string ,taskCreateDto: TaskCreateDto ): Promise<Tasks> {
-        const createdTask = await this.taskRepository.createTask(userId, taskCreateDto);
-        createdTask.save();
-
-        return createdTask;
+    async createTask(userId:string ,taskCreateDto: TaskCreateDto ): Promise<TaskCreateDto> {
+        await this.taskRepository.createTask(userId, taskCreateDto);
+        return taskCreateDto;
     }
 
     async getTasks(userId: any,page:number): Promise<Tasks[]> {
@@ -33,30 +31,33 @@ export class TaskService implements ITaskServiceInterface {
         return task;
     }
 
-    async deleteTask(id: string, userId: any, taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
+    async deleteTask(id: string, userId: any, taskDeleteDto: TaskDeleteDto): Promise<TaskDeleteDto> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
         taskDeleteDto.IsDeleted = true;
         taskDeleteDto.DeletedAt = new Date();
-        const task = await this.taskRepository.deleteTask(id, userId, taskDeleteDto);
-        return task;
+        await this.taskRepository.deleteTask(id, userId, taskDeleteDto);
+
+        return taskDeleteDto;
     }
 
-    async updateTask(id: string, userId: any, taskUpdateDto: TaskUpdateDto): Promise<Tasks> {
+    async updateTask(id: string, userId: any, taskUpdateDto: TaskUpdateDto): Promise<TaskUpdateDto> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
-        const task = await this.taskRepository.updateTask(id, userId, taskUpdateDto);
-        return task;
+        await this.taskRepository.updateTask(id, userId, taskUpdateDto);
+        return taskUpdateDto;
     }
 
-    async updateTaskStatus(id: string, userId: any, taskUpdateStatusDto: TaskUpdateDto): Promise<Tasks> {
+    async updateTaskStatus(id: string, userId: any, taskUpdateStatusDto: TaskUpdateDto): Promise<TaskUpdateDto> {
         if(!userId && !id && !ObjectId.isValid(id)) throw new NotFoundException("User not found");
 
         taskUpdateStatusDto.IsDone = true;
         taskUpdateStatusDto.DoneDate = new Date();
+        console.log(taskUpdateStatusDto);
         
-        const task = await this.taskRepository.updateTask(id, userId, taskUpdateStatusDto);
-        return task;
+
+        await this.taskRepository.updateTask(id, userId, taskUpdateStatusDto);
+        return taskUpdateStatusDto;
     }
     
 

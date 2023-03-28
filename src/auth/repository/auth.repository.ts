@@ -12,7 +12,7 @@ export class AuthRepository implements IAuthRepositoryInterface {
 
     constructor(@InjectModel(Users.name) private readonly usersModel: Model<Users>) {}
 
-    async signIn(signinAuthDto: SigninAuthDto): Promise<any> {
+    async signIn(signinAuthDto: SigninAuthDto): Promise<Users> {
         const user = await this.usersModel.findOne({Email: signinAuthDto.Email}).exec();
         if(!user){
             return null;

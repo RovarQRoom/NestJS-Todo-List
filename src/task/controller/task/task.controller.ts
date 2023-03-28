@@ -22,22 +22,22 @@ export class TaskController {
     }
 
     @Post('create')
-    async createTask(@GetCurrentUserId() userId: string, @Body() taskCreateDto: TaskCreateDto): Promise<Tasks> {
+    async createTask(@GetCurrentUserId() userId: string, @Body() taskCreateDto: TaskCreateDto): Promise<TaskCreateDto> {
         return await this.taskService.createTask(userId, taskCreateDto);
     }
 
     @Patch('delete/:id')
-    async deleteTask(@Param('id') id:string, @GetCurrentUserId() userId: string, @Body() taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
+    async deleteTask(@Param('id') id:string, @GetCurrentUserId() userId: string, @Body() taskDeleteDto: TaskDeleteDto): Promise<TaskDeleteDto> {
         return await this.taskService.deleteTask(id , userId, taskDeleteDto);
     }
 
     @Patch('update/:id')
-    async updateTask(@Param('id') id:string, @GetCurrentUserId() userId: string, @Body() taskUpdateDto: TaskUpdateDto): Promise<Tasks> {
+    async updateTask(@Param('id') id:string, @GetCurrentUserId() userId: string, @Body() taskUpdateDto: TaskUpdateDto): Promise<TaskUpdateDto> {
         return await this.taskService.updateTask(id , userId, taskUpdateDto);
     }
 
     @Patch('update/status/:id')
-    async updateStatusTask(@Param('id') id:string, @GetCurrentUserId() userId: string, @Body() taskUpdateDto: TaskUpdateDto): Promise<Tasks> {
+    async updateStatusTask(@Param('id') id:string, @GetCurrentUserId() userId: string, @Body() taskUpdateDto: TaskUpdateDto): Promise<TaskUpdateDto> {
         return await this.taskService.updateTaskStatus(id , userId, taskUpdateDto);
     }
 }

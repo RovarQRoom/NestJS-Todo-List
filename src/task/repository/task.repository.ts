@@ -17,8 +17,9 @@ export class TaskRepository implements ITaskRepositoryInterface{
 
     async createTask(userId:string ,taskCreateDto: TaskCreateDto): Promise<Tasks> {
         taskCreateDto.UserId = userId;
-        const task = new this.taskModel(taskCreateDto);
+        const task = new this.taskModel(taskCreateDto).save();
         if(!task) throw new Error("Task not created");
+        await this.redisCacheService.reset();
         return task;
     }
 
@@ -26,15 +27,15 @@ export class TaskRepository implements ITaskRepositoryInterface{
         const resPerPage = 5;
         const skip = resPerPage * (page - 1);
 
-        const cachedtasks = await this.redisCacheService.get("tasks");
-        if(cachedtasks && cachedtasks.length > 0 && page == 1) 
+        const cachedtasks = await this.redisCacheService.get(`tasks_${page}`);
+        if(cachedtasks && cachedtasks.length > 0 && cachedtasks[0].UserId == userId) 
         {
             console.log(cachedtasks);
             return cachedtasks as Tasks[];
         }
         
-        const tasks = await this.taskModel.find({UserId:userId, IsDeleted: false}).limit(resPerPage).skip(skip);
-        await this.redisCacheService.set("tasks", tasks, 100000);
+        const tasks = await this.taskModel.find({ $and: [{UserId:userId}, {IsDeleted: false}]}).limit(resPerPage).skip(skip);
+        await this.redisCacheService.set(`tasks_${page}`, tasks, 100000);
         if(!tasks) throw new Error("Tasks not found");
         
         return tasks;
@@ -47,22 +48,23 @@ export class TaskRepository implements ITaskRepositoryInterface{
             console.log(cachedtask);
             return cachedtask;
         }
-        const task = await this.taskModel.findOne({_id:id, UserId:userId, IsDeleted:false});
+        const task = await this.taskModel.findOne({ $and: [{_id:id}, {UserId:userId}, {IsDeleted:false}]});
         if(!task) throw new BadRequestException("Can't find task");
         await this.redisCacheService.set("task", task, 100000);
         return task;
     }
     async deleteTask(id: string, userId:string, taskDeleteDto: TaskDeleteDto): Promise<Tasks> {
-        const task = await this.taskModel.findOneAndUpdate({_id:id, UserId:userId, IsDeleted:false}, taskDeleteDto, {new: true},);
+        const task = await this.taskModel.findOneAndUpdate({ $and: [{_id:id}, {UserId:userId}, {IsDeleted:false}]}, taskDeleteDto, {new: true}).exec();
         
         if(!task) throw new BadRequestException("Task Can't be Deleted Cause It's Already Deleted");
+        await this.redisCacheService.reset();
         return task;
     }
-    async updateTask(id: string, userId:string, taskUpdateDto:TaskUpdateDto): Promise<any> {
-        const task = await this.taskModel.findOneAndUpdate({_id:id, UserId:userId, IsDone:false}, taskUpdateDto, {new: true});
+    async updateTask(id: string, userId:string, taskUpdateDto:TaskUpdateDto): Promise<Tasks> {
+        const task = await this.taskModel.findOneAndUpdate({ $and: [{_id:id}, {UserId:userId}, {IsDone:false}]}, taskUpdateDto, {new: true}).exec();
+        
         if(!task) throw new BadRequestException("Task Can't be Updated Cause It's Already Done");
+        await this.redisCacheService.reset();
         return task;
     }
-
-    private 
 }
