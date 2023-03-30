@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Users } from "src/Model/UsersModel";
 import { IUsersRepository } from "src/users/interface/users/iusers-repository.interface";
-import { CreateUserDto } from '../../Dtos/Users.Dtos';
+import { CreateUserDto} from '../../Dtos/Users.Dtos';
 import { ObjectId } from 'bson';
 import * as bcrypt from 'bcrypt';
 
@@ -89,9 +89,4 @@ export class UsersRepository implements IUsersRepository {
     private async hashPassword(password: string, salt: number): Promise<string> {
         return bcrypt.hash(password, salt);
     } 
-
-    // async updatedRtHash(id: string, hashedRt: string) {
-    //     const hash = await this.hashPassword(hashedRt,10);
-    //     await this.usersModel.findByIdAndUpdate(id,{hashedRt: hash},{new: true}).exec();
-    // }
 }

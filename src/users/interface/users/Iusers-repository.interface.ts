@@ -1,7 +1,10 @@
+import { CreateUserDto } from '../../Dtos/Users.Dtos';
+import { Users } from '../../../Model/UsersModel';
+
 export interface IUsersRepository {
-    createUser(usersDto: any): Promise<any>;
-    getUsers(): Promise<any>;
-    getUserById(id: string): Promise<any>;
-    DeleteUser(id: string): Promise<any>;
-    UpdateUser(id: string, usersDto: any): Promise<any>;
+    createUser(usersDto: CreateUserDto): Promise<Users>;
+    getUsers(): Promise<Users[]>;
+    getUserById(id: string): Promise<Users>;
+    DeleteUser(id: string): Promise<Boolean>;
+    UpdateUser(id: string, usersDto: CreateUserDto): Promise<Users>;
 }

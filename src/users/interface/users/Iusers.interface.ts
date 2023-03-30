@@ -1,7 +1,8 @@
+import { CreateUserDto, GetUsersDto } from '../../Dtos/Users.Dtos';
 export interface IUsers {
-    createUser(usersDto: any): Promise<any>;
-    getUsers(): Promise<any>;
-    getUserById(id: string): Promise<any>;
-    DeleteUser(id: string): Promise<any>;
-    UpdateUser(id: string, usersDto: any): Promise<any>;
+    createUser(usersDto: CreateUserDto): Promise<CreateUserDto>;
+    getUsers(): Promise<GetUsersDto[]>;
+    getUserById(id: string): Promise<GetUsersDto>;
+    DeleteUser(id: string): Promise<string>;
+    UpdateUser(id: string, usersDto: CreateUserDto): Promise<GetUsersDto>;
 }

@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { IUsers } from '../../interface/users/Iusers.interface';
-import { Users } from 'src/Model/UsersModel';
-import { CreateUserDto } from '../../Dtos/Users.Dtos';
+import { CreateUserDto, GetUsersDto } from '../../Dtos/Users.Dtos';
 import { validate } from 'class-validator';
 import { UsersRepository } from '../../repository/users/users.repository';
 
@@ -10,7 +9,7 @@ export class UsersService implements IUsers {
     constructor(private usersRepository: UsersRepository) {}// private readonly usersModel: Model<Users>
     
     // Create User
-    async createUser(usersDto: CreateUserDto): Promise<Users> {
+    async createUser(usersDto: CreateUserDto): Promise<CreateUserDto> {
         const createdUser = await this.usersRepository.createUser(usersDto);
         const errors = await validate(createdUser);
 
@@ -22,27 +21,52 @@ export class UsersService implements IUsers {
         if(errors.length > 0){
             throw new BadRequestException(errors);
         } 
+        createdUser.save();
 
-        console.log(createdUser);
-        return createdUser.save();
+        const sendUser = new CreateUserDto();
+        sendUser.Email = createdUser.Email;
+        sendUser.FirstName = createdUser.FirstName;
+        sendUser.LastName = createdUser.LastName;
+        sendUser.Phone = createdUser.Phone;
+        sendUser.Password = createdUser.Password;
+
+        return sendUser;
     }
     // End Create User
 
     // Get All Users
-    async getUsers() {
-        return this.usersRepository.getUsers();
+    async getUsers(): Promise<GetUsersDto[]> {
+        const Users = await this.usersRepository.getUsers();
+
+        const getReadUsers = new Array<GetUsersDto>();
+        Users.forEach(user => {
+            const getUser = new GetUsersDto();
+            getUser.Email = user.Email;
+            getUser.FirstName = user.FirstName;
+            getUser.LastName = user.LastName;
+            getUser.Phone = user.Phone;
+            getReadUsers.push(getUser);
+        });
+
+        return Users;
     }
     // End Get All Users
 
     // Get User By Id
-    async getUserById(id: string): Promise<Users> {
+    async getUserById(id: string): Promise<GetUsersDto> {
         const user = await this.usersRepository.getUserById(id);
         
         if(!user){
             throw new BadRequestException("User not found");
         }
 
-        return user;
+        const getUser = new GetUsersDto();
+        getUser.Email = user.Email,
+        getUser.FirstName = user.FirstName,
+        getUser.LastName = user.LastName,
+        getUser.Phone = user.Phone
+
+        return getUser;
     }
     // End Get User By Id
 
@@ -63,27 +87,19 @@ export class UsersService implements IUsers {
     // End Delete User By Id
 
     // Update User By Id
-    async UpdateUser(id: string, usersDto: CreateUserDto): Promise<Users> {
+    async UpdateUser(id: string, usersDto: CreateUserDto): Promise<GetUsersDto> {
         const user = await this.usersRepository.UpdateUser(id, usersDto);
 
         if(!user){
             throw new BadRequestException("User not found");
         }
+        const getUser = new GetUsersDto();
+        getUser.Email = user.Email,
+        getUser.FirstName = user.FirstName,
+        getUser.LastName = user.LastName,
+        getUser.Phone = user.Phone
 
-        return user;
+        return getUser;
     }
-    // End Update User By Id
-
-    // async findOne(email:string): Promise<Users> {
-    //     const user = await this.usersRepository.findOne(email);
-    //     return user;
-    // }
-
-    // // Update Refresh Token Hash of Users
-    // async updatedRtHash(id: string, hashedRt: string) {
-    //     return await this.usersRepository.updatedRtHash(id, hashedRt);
-    // }
-    // // End Update Refresh Token Hash of Users
-
 
 }

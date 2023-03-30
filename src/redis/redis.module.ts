@@ -48,7 +48,7 @@ import { RedisCacheService } from './service/redis/redis.service';
             useFactory: async () => {
                 return {
                     store: redisStore,
-                    host: 'localhost',
+                    host: "127.0.0.1",
                     port: 6379,
                     ttl: 60*3600*1000, // seconds
                 };
