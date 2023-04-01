@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { AccessTokenGuard } from './common/guards/accessToken.guard';
 import { TaskModule } from './task/task.module';
 import { RedisModule } from './redis/redis.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @UseInterceptors(CacheInterceptor)
 @Module({
@@ -17,12 +18,25 @@ import { RedisModule } from './redis/redis.module';
       ttl: 100000, // seconds
       max: 1000, // maximum number of items in cache
     }),
-    RedisModule
+    ClientsModule.register([
+      {
+        name: 'RabbitMQService',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://localhost:5672'],
+          queue: 'task_queue',
+          queueOptions: {
+            durable: false
+          },
+        },
+      },
+    ]),
+    RedisModule,
   ],
   controllers: [],
   providers: [{
     provide: 'APP_GUARD',
     useClass: AccessTokenGuard,
-  }],
+  },],
 })
 export class AppModule {}

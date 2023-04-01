@@ -1,19 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ITaskServiceInterface } from '../../interface/Itaskservice.interface';
 import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from 'src/task/Dtos/task.dto';
 import { Tasks } from 'src/Model/TaskModel';
 import { TaskRepository } from 'src/task/repository/task.repository';
 import { ObjectId } from 'bson';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class TaskService implements ITaskServiceInterface {
 
     constructor(
+        @Inject('RabbitMQService') private readonly rabbitMQService: ClientProxy,
         private readonly taskRepository: TaskRepository
         ){}
     
     async createTask(userId:string ,taskCreateDto: TaskCreateDto ): Promise<TaskCreateDto> {
         await this.taskRepository.createTask(userId, taskCreateDto);
+        await this.rabbitMQService.emit('task_created', taskCreateDto);
         return taskCreateDto;
     }
 
