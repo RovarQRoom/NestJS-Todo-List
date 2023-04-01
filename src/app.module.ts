@@ -6,6 +6,7 @@ import { AccessTokenGuard } from './common/guards/accessToken.guard';
 import { TaskModule } from './task/task.module';
 import { RedisModule } from './redis/redis.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { RabbitMQModule } from './rabbitmq/rabbitmq.module';
 
 @UseInterceptors(CacheInterceptor)
 @Module({
@@ -32,6 +33,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     ]),
     RedisModule,
+    RabbitMQModule
   ],
   controllers: [],
   providers: [{
