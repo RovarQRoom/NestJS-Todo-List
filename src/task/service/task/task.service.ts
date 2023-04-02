@@ -5,7 +5,6 @@ import { Tasks } from 'src/Model/TaskModel';
 import { TaskRepository } from 'src/task/repository/task.repository';
 import { ObjectId } from 'bson';
 import { RabbitmqService } from '../../../rabbitmq/service/rabbitmq/rabbitmq.service';
-import { TasksCreated } from '../../Event/task.event';
 
 @Injectable()
 export class TaskService implements ITaskServiceInterface {
