@@ -51,6 +51,17 @@ export class AuthRepository implements IAuthRepositoryInterface {
         }
         return user;
     }
+
+    async createGoogleUser(user: any): Promise<Users> {
+        const createdUser = new this.usersModel({
+            Email: user.email,
+            Password: user.password,
+            FirstName: user.firstName,
+            LastName: user.lastName,
+            googleId: user.id,
+        });
+        return createdUser.save();
+    }
     
     async updatedRtHash(id: string, hashedRt: string) {
         const hash = await this.hashPassword(hashedRt,10);

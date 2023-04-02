@@ -16,8 +16,8 @@ export class TaskService implements ITaskServiceInterface {
         ){}
     
     async createTask(userId:string ,taskCreateDto: TaskCreateDto ): Promise<TaskCreateDto> {
-        await this.taskRepository.createTask(userId, taskCreateDto);
-        this.rabbitMQService.send('task_created', new TasksCreated(taskCreateDto.Title, taskCreateDto.Description, taskCreateDto.DueTime.toString(), userId));
+        const task = await this.taskRepository.createTask(userId, taskCreateDto);
+        this.rabbitMQService.send('task_created', task);
         return taskCreateDto;
     }
 

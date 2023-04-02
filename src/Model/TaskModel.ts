@@ -24,7 +24,7 @@ export class Tasks extends Document {
     @Prop({type: Date, nullable: true})
     DeletedAt:Date;
     
-    @Prop({type: SchemaTypes.ObjectId, ref: 'Users'})
+    @Prop({type: SchemaTypes.ObjectId , ref: 'Users'})
     UserId:string;
 }
 

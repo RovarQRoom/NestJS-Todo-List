@@ -22,6 +22,9 @@ export class Users extends Document {
 
     @Prop({type:String})
     hashedRt: string;
+
+    @Prop({type:String , nullable: true, default: null, unique: true})
+    googleId: string;
 }
 
 export const UsersSchema = SchemaFactory.createForClass(Users);

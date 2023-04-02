@@ -25,15 +25,26 @@ export class AuthService implements IAuthInterface {
             return tokens;
         }
         throw new UnauthorizedException("User not found");
-        
     }
     // End Sign In User And Authentication
 
     async googleLogin(req) {
         if (!req.user) {
-          return 'No user from Google';
+            return 'No user from Google';
         }
-        return req.user;
+        const userDb = await this.AuthRepository.findUserByEmail(req.user.email);
+        if(userDb){
+            const tokens = await this.getTokens(userDb._id, userDb.Email);
+            await this.AuthRepository.updatedRtHash(userDb._id, tokens.refresh_token);
+            return tokens;
+        }else{
+
+            await this.AuthRepository.createGoogleUser(req.user);
+            const userDbCreated = await this.AuthRepository.findUserByEmail(req.user.email);
+            const tokens = await this.getTokens(userDbCreated.id, req.user.email);
+            await this.AuthRepository.updatedRtHash(req.user._id, tokens.refresh_token);
+            return tokens;
+        }
     }
 
     // Sign Up User And Authentication
