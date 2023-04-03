@@ -6,14 +6,21 @@ import { TaskService } from './service/task/task.service';
 import { TaskRepository } from './repository/task.repository';
 import { RedisModule } from '../redis/redis.module';
 import { RabbitMQModule } from '../rabbitmq/rabbitmq.module';
+import { AccessTokenStrategy } from 'src/strategies/AccessToken.strategy';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
     imports: [
         MongooseModule.forFeature([{name: Tasks.name, schema: TasksSchema}]),
         RedisModule,
-        RabbitMQModule
+        JwtModule,
+        RabbitMQModule,
     ],
     controllers: [TaskController],
-    providers: [TaskService, TaskRepository],
+    providers: [
+                TaskService, 
+                TaskRepository,
+                AccessTokenStrategy
+            ],
 })
 export class TaskModule {}
