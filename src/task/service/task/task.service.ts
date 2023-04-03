@@ -10,13 +10,12 @@ import { RabbitmqService } from '../../../rabbitmq/service/rabbitmq/rabbitmq.ser
 export class TaskService implements ITaskServiceInterface {
 
     constructor(
-        private readonly rabbitMQService: RabbitmqService,
         private readonly taskRepository: TaskRepository
         ){}
     
     async createTask(userId:string ,taskCreateDto: TaskCreateDto ): Promise<TaskCreateDto> {
-        const task = await this.taskRepository.createTask(userId, taskCreateDto);
-        this.rabbitMQService.send('task_created', task);
+        await this.taskRepository.createTask(userId, taskCreateDto);
+      
         return taskCreateDto;
     }
 

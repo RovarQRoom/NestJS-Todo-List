@@ -5,6 +5,7 @@ import { Tasks } from 'src/Model/TaskModel';
 import { TaskCreateDto, TaskDeleteDto, TaskUpdateDto } from '../../Dtos/task.dto';
 import { JwtService } from '@nestjs/jwt';
 import { Public } from 'src/common/decorators/public.decorator';
+import { EventPattern } from '@nestjs/microservices';
 
 
 @Controller('task')
@@ -49,13 +50,17 @@ export class TaskController {
 
     
     @Public()
-    @Post('verify-token')
-    async verifyToken(@Req() req:any,@Res() res:any) {
-        const accessToken = this.jwtService.signAsync({sub:req['body']['userId'], email:req['body']['email']},{
-            secret:"rovarkamilothmanaziz",
-            expiresIn: 60 * 60,
-        })
-        console.log(req['body']['userId']);
-        return {access_token: accessToken};
+    @EventPattern('token-verify')
+    async verifyToken(user: any) {
+        try{
+            const accessToken = this.jwtService.signAsync({sub:user.id, email:user.email},{
+                secret:"rovarkamilothmanaziz",
+                expiresIn: 60 * 60,
+            })
+            return {access_token: accessToken};
+        }catch(err){
+            console.error(err);
+            return null;
+        }
     }
 }
